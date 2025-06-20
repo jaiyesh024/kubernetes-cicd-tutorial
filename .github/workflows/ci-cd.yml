@@ -63,6 +63,8 @@ jobs:
           # Commit changes
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
+          cd gitops
+          ls -l
           git add deployment.yaml
           git commit -m "Update image to ${{ github.sha }}"
           
