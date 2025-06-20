@@ -26,6 +26,10 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ github.sha }}
+      - name: Update image name
+        run: |
+          sed -i "s|ghcr/PLACEHOLDER/ghcr/${{GITHUB.repository_owner}}|g" deployment.yaml
+          
       - name: Update GitOps repository
         shell: bash
         env:
