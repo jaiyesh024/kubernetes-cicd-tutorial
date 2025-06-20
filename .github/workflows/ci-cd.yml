@@ -47,17 +47,8 @@ jobs:
           #Replace image tag
           sed -i "s|ghcr.io/PLACEHOLDER|ghcr.io/${{ github.repository_owner }}|g" deployment.yaml
           sed -i "s|image: ghcr.io/${{ github.repository }}:.*|image: ghcr.io/${{ github.repository }}:${{ github.sha }}|g" deployment.yaml
-          
-          # Clone repository using HTTPS URL without token         
-          cat deployment.yaml 
-          
-          if [[ "$OSTYPE" == "darwin"* ]]; then
-            sed -i '' "s|image: ghcr.io/${{ github.repository }}:.*|image: ghcr.io/${{ github.repository }}:${{ github.sha }}|g" deployment.yaml
-          else
-            sed -i "s|image: ghcr.io/${{ github.repository }}:.*|image: ghcr.io/${{ github.repository }}:${{ github.sha }}|g" deployment.yaml
-          fi
+                   
 
-          cat deployment.yaml
       - name: Commit changes
         run: |
           # Commit changes
