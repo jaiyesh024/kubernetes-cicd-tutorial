@@ -1,29 +1,23 @@
 name: CI/CD Pipeline
-'on':
+on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
-
+    branches: [ main ]
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
-          username: '${{ github.repository_owner }}'
-          password: '${{ secrets.CR_PAT }}'
-
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
@@ -32,28 +26,31 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ github.sha }}
-
+          
       - name: Update GitOps repository
         shell: bash
         env:
-          GIT_TOKEN: '${{ secrets.GITOPS_PAT }}'
-        run: >
+          GIT_TOKEN: ${{ secrets.GITOPS_PAT }}
+        run: |
           # Configure git credential store
           git config --global credential.helper store
           echo "https://${GIT_TOKEN}:x-oauth-basic@github.com" > ~/.git-credentials
+          
           # Remove any existing gitops directory
           rm -rf gitops
 
       - name: Update image name
-        run: >
+        run: |
           git clone https://github.com/${{GITHUB.repository_owner}}/grade-api-gitops.git gitops
           cd gitops
+          
           #Replace image tag
           sed -i "s|ghcr.io/PLACEHOLDER|ghcr.io/${{ github.repository_owner }}|g" deployment.yaml
           sed -i "s|image: ghcr.io/${{ github.repository }}:.*|image: ghcr.io/${{ github.repository }}:${{ github.sha }}|g" deployment.yaml
+                   
 
       - name: Commit changes
-        run: >
+        run: |
           # Commit changes
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
@@ -61,5 +58,6 @@ jobs:
           ls -l
           git add deployment.yaml
           git commit -m "Update image to ${{ github.sha }}"
-          # Push to main branch:
+          
+          # Push to main branch:....
           git push -f https://github.com/${{GITHUB.repository_owner}}/grade-api-gitops.git main
