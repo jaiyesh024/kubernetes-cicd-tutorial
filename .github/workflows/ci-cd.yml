@@ -58,7 +58,8 @@ jobs:
           fi
 
           cat deployment.yaml
-          
+      - name: Commit changes
+        run: |
           # Commit changes
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
