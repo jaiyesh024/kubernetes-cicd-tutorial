@@ -58,5 +58,5 @@ jobs:
           git add deployment.yaml
           git commit -m "Update image to ${{ github.sha }}"
           
-          # Push to main branch:
+          # Push to main branch:..
           git push -f https://${GIT_TOKEN}@github.com/${{GITHUB.repository_owner}}/grade-api-gitops.git main
