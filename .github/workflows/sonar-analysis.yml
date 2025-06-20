@@ -1,4 +1,4 @@
-name: SonarQube Analysis
+name: sonar-analysis
 
 on:
   push:
