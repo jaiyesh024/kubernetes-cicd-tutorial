@@ -26,9 +26,6 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ github.sha }}
-      - name: Update image name
-        run: |
-          sed -i "s|ghcr.io/PLACEHOLDER|ghcr.io/${{GITHUB.repository_owner}}|g" deployment.yaml
           
       - name: Update GitOps repository
         shell: bash
@@ -47,6 +44,9 @@ jobs:
           cd gitops
           
           cat deployment.yaml 
+      - name: Update image name
+        run: |
+          sed -i "s|ghcr.io/PLACEHOLDER|ghcr.io/${{GITHUB.repository_owner}}|g" deployment.yaml
           
           if [[ "$OSTYPE" == "darwin"* ]]; then
             sed -i '' "s|image: ghcr.io/${{ github.repository }}:.*|image: ghcr.io/${{ github.repository }}:${{ github.sha }}|g" deployment.yaml
